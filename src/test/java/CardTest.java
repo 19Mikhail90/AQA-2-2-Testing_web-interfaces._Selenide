@@ -70,7 +70,7 @@ class CardDeliveryTest {
         String formedDate = today.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[data-test-id=city] input").setValue("То");
         $$("[class=menu-item__control").findBy(text("Томск")).click();
-        $("[data-test-id=date] input").doubleClick().sendKeys( (4));
+        $("[data-test-id=date] input").doubleClick().sendKeys(inputDate(4));
         $("[data-test-id=name] input").setValue("Агутин Леонид");
         $("[data-test-id=phone] input").setValue("+79617418596");
         $("[data-test-id=agreement]").click();
