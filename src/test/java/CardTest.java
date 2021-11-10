@@ -7,8 +7,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
@@ -17,11 +16,12 @@ import static com.codeborne.selenide.Selenide.$$;
 
 class CardDeliveryTest {
 
-    public static String inputDate (int date) {
+    public static String inputDate(int date) {
         LocalDate today = LocalDate.now().plusDays(date);
         return today.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
-    public static String actualDate () {
+
+    public static String actualDate() {
         LocalDate today = LocalDate.now();
         return today.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
@@ -37,9 +37,8 @@ class CardDeliveryTest {
     }
 
     @Test
-    void shouldCalendarTest() {//позитивный тест с выбором в календаре и двумя буквами в поле город
-        LocalDate today = LocalDate.now().plusDays(7);
-        String formedDate = today.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    void shouldCalendarTest() {
+
         $("[data-test-id=city] input").setValue("То");
         $$("[class=menu-item__control").findBy(text("Томск")).click();
         $("[data-test-id=date] input").click();
@@ -48,7 +47,9 @@ class CardDeliveryTest {
         $("[data-test-id=agreement]").click();
         $(withText("Забронировать")).click();
         $(byText("Успешно!")).shouldBe(visible, Duration.ofSeconds(15));
-        $(byText("Встреча успешно забронирована на")).shouldBe(visible);
+        $(byText("Встреча успешно забронирована на")).shouldBe(visible, Duration.ofSeconds(15));
+        $(".notification__content").shouldBe(visible, Duration.ofSeconds(15))
+                .shouldHave(exactText("Встреча успешно забронирована на " + inputDate(3)));
     }
 
     @Test
@@ -66,8 +67,7 @@ class CardDeliveryTest {
 
     @Test
     void shouldPositiveTest() {//позитивный тест с датой больше на 4 дня от фактической
-        LocalDate today = LocalDate.now().plusDays(4);
-        String formedDate = today.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
         $("[data-test-id=city] input").setValue("То");
         $$("[class=menu-item__control").findBy(text("Томск")).click();
         $("[data-test-id=date] input").doubleClick().sendKeys(inputDate(4));
@@ -76,6 +76,8 @@ class CardDeliveryTest {
         $("[data-test-id=agreement]").click();
         $(withText("Забронировать")).click();
         $(byText("Успешно!")).shouldBe(visible, Duration.ofSeconds(15));
-        $(byText("Встреча успешно забронирована на")).shouldBe(visible);
+        $(byText("Встреча успешно забронирована на")).shouldBe(visible, Duration.ofSeconds(15));
+        $(".notification__content").shouldBe(visible, Duration.ofSeconds(15))
+                .shouldHave(exactText("Встреча успешно забронирована на " + inputDate(4)));
     }
 }
